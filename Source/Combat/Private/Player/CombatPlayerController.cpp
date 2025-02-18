@@ -8,7 +8,7 @@
 
 ACombatPlayerController::ACombatPlayerController()
 {
-	
+	bReplicates = true;
 }
 
 void ACombatPlayerController::PlayerTick(float DeltaTime)
