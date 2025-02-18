@@ -3,14 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
 #include "CombatCharacterBase.generated.h"
 
+class UAttributeSet;
+class UAbilitySystemComponent;
 class USpringArmComponent;
 class UCameraComponent;
 
-UCLASS()
-class COMBAT_API ACombatCharacterBase : public ACharacter
+UCLASS(Abstract)
+class COMBAT_API ACombatCharacterBase : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -26,17 +29,23 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 	// ====== ====== ======
 	// Core
 	// ====== ====== ======
+public:
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 protected:
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent{};
+
+	UPROPERTY()
+	TObjectPtr<UAttributeSet> AttributeSet{};
+	
 private:
-	UPROPERTY(Category=Combat, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(Category="Combat | Character", VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<USpringArmComponent> SpringArm{};
 
-	UPROPERTY(Category=Combat, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	UPROPERTY(Category="Combat | Character", VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> FollowCamera{};
 	
 };
