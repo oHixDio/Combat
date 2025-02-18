@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "CombatCharacterBase.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
+
 UCLASS()
 class COMBAT_API ACombatCharacterBase : public ACharacter
 {
@@ -25,4 +28,15 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// ====== ====== ======
+	// Core
+	// ====== ====== ======
+protected:
+private:
+	UPROPERTY(Category=Combat, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<USpringArmComponent> SpringArm{};
+
+	UPROPERTY(Category=Combat, VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UCameraComponent> FollowCamera{};
+	
 };
