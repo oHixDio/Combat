@@ -34,3 +34,8 @@ UAbilitySystemComponent* ACombatCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+void ACombatCharacterBase::InitAbilityActorInfo()
+{
+	// 
+}
+

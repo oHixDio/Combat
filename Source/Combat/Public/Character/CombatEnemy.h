@@ -13,5 +13,18 @@ UCLASS()
 class COMBAT_API ACombatEnemy : public ACombatCharacterBase
 {
 	GENERATED_BODY()
-	
+
+	// ====== ====== ======
+	// Engine
+	// ====== ====== ======
+public:
+	ACombatEnemy();
+protected:
+	virtual void BeginPlay() override;
+
+	// ====== ====== ======
+	// Core
+	// ====== ====== ======
+private:
+	virtual void InitAbilityActorInfo() override;
 };

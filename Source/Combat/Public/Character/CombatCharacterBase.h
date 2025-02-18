@@ -18,7 +18,7 @@ class COMBAT_API ACombatCharacterBase : public ACharacter, public IAbilitySystem
 	GENERATED_BODY()
 
 	// ====== ====== ======
-	// Super
+	// Engine
 	// ====== ====== ======
 public:
 	ACombatCharacterBase();
@@ -47,5 +47,8 @@ private:
 
 	UPROPERTY(Category="Combat | Character", VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> FollowCamera{};
+
+
+	virtual void InitAbilityActorInfo();
 	
 };
