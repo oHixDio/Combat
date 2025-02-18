@@ -1,7 +1,7 @@
 // Copyright Hiro
 
 
-#include "CombatCharacterBase.h"
+#include "Character/CombatCharacterBase.h"
 
 // Sets default values
 ACombatCharacterBase::ACombatCharacterBase()
