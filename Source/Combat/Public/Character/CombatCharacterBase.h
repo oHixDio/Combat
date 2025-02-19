@@ -45,6 +45,11 @@ protected:
 
 	virtual void InitAbilityActorInfo();
 
+	void SetMovementSpeed(const float Speed);
+
+	UFUNCTION(Server, Reliable)
+	void ServerSetMovementSpeed(const float Speed);
+
 	// ====== ====== ======
 	// Combat Interface
 	// ====== ====== ======

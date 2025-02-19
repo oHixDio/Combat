@@ -32,6 +32,8 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
+	virtual void Tick(float DeltaTime) override;
+
 	// ====== ====== ======
 	// Core
 	// ====== ====== ======
@@ -75,12 +77,32 @@ private:
 
 	UPROPERTY(Replicated)
 	bool bIsSprinting{};
+
+	UPROPERTY(Category="Combat | Action", EditAnywhere)
+	float CrouchWalkSpeed{200.f};
+
+	UPROPERTY(Category="Combat | Action", EditAnywhere)
+	float BaseWalkSpeed{500.f};
+
+	UPROPERTY(Category="Combat | Action", EditAnywhere)
+	float SPrintWalkSpeed{800.f};
+
+	UPROPERTY(Category="Combat | Action", EditAnywhere)
+	float AimWalkSpeed{300.f};
+
+	UPROPERTY(Category="Combat | Action", EditAnywhere)
+	float CanSprintVelocity{300.f};
+
+	UPROPERTY(Category="Combat | Action", EditAnywhere)
+	float CanSprintAngle{20.f};
 	
 	void ToggleCrouch();
 
 	void Sprint();
 
 	void UnSprint();
+
+	void CheckSprint();
 
 	void Aim();
 
@@ -90,6 +112,8 @@ private:
 
 	UFUNCTION(Server, Reliable)
 	void ServerSetSprinting(const bool bSprinting);
+
+	bool CanSprint() const;
 
 	void SetAiming(const bool bAiming);
 

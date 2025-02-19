@@ -54,6 +54,20 @@ void ACombatCharacterBase::InitAbilityActorInfo()
 	// 
 }
 
+void ACombatCharacterBase::SetMovementSpeed(const float Speed)
+{
+	GetCharacterMovement()->MaxWalkSpeed = Speed;
+	if (!HasAuthority())
+	{
+		ServerSetMovementSpeed(Speed);
+	}
+}
+
+void ACombatCharacterBase::ServerSetMovementSpeed_Implementation(const float Speed)
+{
+	GetCharacterMovement()->MaxWalkSpeed = Speed;
+}
+
 bool ACombatCharacterBase::IsEquippedWeapon_Implementation() const
 {
 	return IsValid(Weapon);
