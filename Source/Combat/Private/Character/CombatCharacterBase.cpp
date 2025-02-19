@@ -4,11 +4,21 @@
 #include "Character/CombatCharacterBase.h"
 #include "Weapon/Weapon.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 
 ACombatCharacterBase::ACombatCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	GetCharacterMovement()->JumpZVelocity = 700.f;
+	GetCharacterMovement()->AirControl = 0.35f;
+	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
+	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
+	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
+
+	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 }
 
 void ACombatCharacterBase::BeginPlay()

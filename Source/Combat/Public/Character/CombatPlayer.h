@@ -6,6 +6,7 @@
 #include "CombatCharacterBase.h"
 #include "CombatPlayer.generated.h"
 
+class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
 
@@ -27,6 +28,10 @@ public:
 
 	virtual void OnRep_PlayerState() override;
 
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+
 	// ====== ====== ======
 	// Core
 	// ====== ====== ======
@@ -40,7 +45,57 @@ private:
 	 * ASC,ASをPlayerStateから受け取り、ASC->InitAbilityActorInfoを実行するハンドル関数.
 	 */
 	virtual void InitAbilityActorInfo() override;
+
+	// ====== ====== ======
+	// Combat Interface
+	// ====== ====== ======
+public:
+	virtual bool IsAiming_Implementation() const override;
+
+	virtual bool IsSprinting_Implementation() const override;
+
+	// ====== ====== ======
+	// Action
+	// ====== ====== ======
+private:
+	UPROPERTY(Category="Combat | Input", EditAnywhere)
+	TObjectPtr<UInputAction> CrouchAction{};
+
+	UPROPERTY(Category="Combat | Input", EditAnywhere)
+	TObjectPtr<UInputAction> SprintAction{};
+
+	UPROPERTY(Category="Combat | Input", EditAnywhere)
+	TObjectPtr<UInputAction> JumpAction{};
+
+	UPROPERTY(Category="Combat | Input", EditAnywhere)
+	TObjectPtr<UInputAction> AimAction{};
+
+	UPROPERTY(Replicated)
+	bool bIsAiming{};
+
+	UPROPERTY(Replicated)
+	bool bIsSprinting{};
 	
+	void ToggleCrouch();
+
+	void Sprint();
+
+	void UnSprint();
+
+	void Aim();
+
+	void UnAim();
+
+	void SetSprinting(const bool bSprinting);
+
+	UFUNCTION(Server, Reliable)
+	void ServerSetSprinting(const bool bSprinting);
+
+	void SetAiming(const bool bAiming);
+
+	UFUNCTION(Server, Reliable)
+	void ServerSetAiming(const bool bAiming);
+
 	// ====== ====== ======
 	// Weapon
 	// ====== ====== ======

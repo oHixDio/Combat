@@ -24,6 +24,12 @@ class COMBAT_API ICombatInterface
 	
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	bool IsAiming() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	bool IsSprinting() const;
+	
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	bool IsEquippedWeapon() const;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)

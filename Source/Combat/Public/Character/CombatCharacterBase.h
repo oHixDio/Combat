@@ -46,7 +46,7 @@ protected:
 	virtual void InitAbilityActorInfo();
 
 	// ====== ====== ======
-	// Core
+	// Combat Interface
 	// ====== ====== ======
 public:
 	virtual bool IsEquippedWeapon_Implementation() const override;
