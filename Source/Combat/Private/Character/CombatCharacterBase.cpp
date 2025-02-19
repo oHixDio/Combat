@@ -23,8 +23,10 @@ void ACombatCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	StartupEquipment();
-	
+	if (HasAuthority())
+	{
+		StartupEquipment();
+	}
 }
 
 void ACombatCharacterBase::Tick(float DeltaTime)
@@ -50,6 +52,11 @@ void ACombatCharacterBase::InitAbilityActorInfo()
 	// 
 }
 
+bool ACombatCharacterBase::IsEquippedWeapon_Implementation() const
+{
+	return IsValid(Weapon);
+}
+
 void ACombatCharacterBase::OnRep_Weapon()
 {
 	AttachActorToRightHand(Weapon);
@@ -57,7 +64,7 @@ void ACombatCharacterBase::OnRep_Weapon()
 
 void ACombatCharacterBase::StartupEquipment()
 {
-	if (StartupEquipmentWeapon == nullptr) return;
+	if (!IsValid(StartupEquipmentWeapon)) return;
 
 	Weapon = GetWorld()->SpawnActor<AWeapon>(StartupEquipmentWeapon);
 	check(Weapon);
@@ -67,7 +74,7 @@ void ACombatCharacterBase::StartupEquipment()
 
 void ACombatCharacterBase::AttachActorToRightHand(AActor* AttachToActor) const
 {
-	if (AttachToActor == nullptr || GetMesh() == nullptr) return;
+	if (!IsValid(AttachToActor) || !IsValid(GetMesh())) return;
 	
 	if (const USkeletalMeshSocket* RightHandSocket = GetMesh()->GetSocketByName(FName("RightHandSocket")))
 	{

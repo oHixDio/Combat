@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "CombatInterface.h"
 #include "GameFramework/Character.h"
 #include "CombatCharacterBase.generated.h"
 
@@ -14,7 +15,7 @@ class USpringArmComponent;
 class UCameraComponent;
 
 UCLASS(Abstract)
-class COMBAT_API ACombatCharacterBase : public ACharacter, public IAbilitySystemInterface
+class COMBAT_API ACombatCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -51,6 +52,12 @@ private:
 	TObjectPtr<UCameraComponent> FollowCamera{};
 
 	virtual void InitAbilityActorInfo();
+
+	// ====== ====== ======
+	// Core
+	// ====== ====== ======
+public:
+	virtual bool IsEquippedWeapon_Implementation() const override;
 
 	// ====== ====== ======
 	// Weapon
