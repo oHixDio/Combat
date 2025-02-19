@@ -6,6 +6,9 @@
 #include "CombatCharacterBase.h"
 #include "CombatPlayer.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
+
 /**
  * 
  */
@@ -18,6 +21,8 @@ class COMBAT_API ACombatPlayer : public ACombatCharacterBase
 	// Engine
 	// ====== ====== ======
 public:
+	ACombatPlayer();
+	
 	virtual void PossessedBy(AController* NewController) override;
 
 	virtual void OnRep_PlayerState() override;
@@ -26,9 +31,24 @@ public:
 	// Core
 	// ====== ====== ======
 private:
+	UPROPERTY(Category="Combat | Character", VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<USpringArmComponent> SpringArm{};
+
+	UPROPERTY(Category="Combat | Character", VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	TObjectPtr<UCameraComponent> FollowCamera{};
 	/*
 	 * ASC,ASをPlayerStateから受け取り、ASC->InitAbilityActorInfoを実行するハンドル関数.
 	 */
 	virtual void InitAbilityActorInfo() override;
 	
+	// ====== ====== ======
+	// Weapon
+	// ====== ====== ======
+protected:
+	virtual void EquipWeapon(AWeapon* WeaponToEquip) override;
+
+	virtual void OnRep_Weapon() override;
+
+private:
+	void EquipMode();
 };

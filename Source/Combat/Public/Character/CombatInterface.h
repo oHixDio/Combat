@@ -6,6 +6,8 @@
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
 
+class AWeapon;
+
 UINTERFACE(MinimalAPI)
 class UCombatInterface : public UInterface
 {
@@ -23,4 +25,7 @@ class COMBAT_API ICombatInterface
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	bool IsEquippedWeapon() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	AWeapon* GetWeapon();
 };

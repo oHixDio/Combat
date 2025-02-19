@@ -3,20 +3,12 @@
 
 #include "Character/CombatCharacterBase.h"
 #include "Weapon/Weapon.h"
-#include "Camera/CameraComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "Net/UnrealNetwork.h"
 
 ACombatCharacterBase::ACombatCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	SpringArm = CreateDefaultSubobject<USpringArmComponent>("SpringArm");
-	SpringArm->SetupAttachment(RootComponent);
-
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>("FollowCamera");
-	FollowCamera->SetupAttachment(SpringArm);
 }
 
 void ACombatCharacterBase::BeginPlay()
@@ -57,6 +49,11 @@ bool ACombatCharacterBase::IsEquippedWeapon_Implementation() const
 	return IsValid(Weapon);
 }
 
+AWeapon* ACombatCharacterBase::GetWeapon_Implementation()
+{
+	return Weapon;
+}
+
 void ACombatCharacterBase::OnRep_Weapon()
 {
 	AttachActorToRightHand(Weapon);
@@ -66,10 +63,10 @@ void ACombatCharacterBase::StartupEquipment()
 {
 	if (!IsValid(StartupEquipmentWeapon)) return;
 
-	Weapon = GetWorld()->SpawnActor<AWeapon>(StartupEquipmentWeapon);
-	check(Weapon);
-	Weapon->SetOwner(this);	// Repされます.
-	AttachActorToRightHand(Weapon);
+	AWeapon* StartupWeapon = GetWorld()->SpawnActor<AWeapon>(StartupEquipmentWeapon);
+	check(StartupWeapon);
+	EquipWeapon(StartupWeapon);
+	
 }
 
 void ACombatCharacterBase::AttachActorToRightHand(AActor* AttachToActor) const
@@ -80,5 +77,14 @@ void ACombatCharacterBase::AttachActorToRightHand(AActor* AttachToActor) const
 	{
 		RightHandSocket->AttachActor(AttachToActor,GetMesh());
 	}
+}
+
+void ACombatCharacterBase::EquipWeapon(AWeapon* WeaponToEquip)
+{
+	if (!IsValid(WeaponToEquip)) return;
+
+	Weapon = WeaponToEquip;
+	Weapon->SetOwner(this);	// Repされます.
+	AttachActorToRightHand(Weapon);
 }
 

@@ -11,8 +11,7 @@
 class AWeapon;
 class UAttributeSet;
 class UAbilitySystemComponent;
-class USpringArmComponent;
-class UCameraComponent;
+
 
 UCLASS(Abstract)
 class COMBAT_API ACombatCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
@@ -43,13 +42,6 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet{};
-	
-private:
-	UPROPERTY(Category="Combat | Character", VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
-	TObjectPtr<USpringArmComponent> SpringArm{};
-
-	UPROPERTY(Category="Combat | Character", VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
-	TObjectPtr<UCameraComponent> FollowCamera{};
 
 	virtual void InitAbilityActorInfo();
 
@@ -62,12 +54,16 @@ public:
 	// ====== ====== ======
 	// Weapon
 	// ====== ====== ======
+public:
+	virtual AWeapon* GetWeapon_Implementation() override;
 protected:
 	UPROPERTY(Category="Combat | Weapon", EditDefaultsOnly)
 	TSubclassOf<AWeapon> StartupEquipmentWeapon{};
 
 	UFUNCTION()
-	void OnRep_Weapon();
+	virtual void OnRep_Weapon();
+	
+	virtual void EquipWeapon(AWeapon* WeaponToEquip);
 	
 private:
 	UPROPERTY(ReplicatedUsing = OnRep_Weapon)
@@ -76,5 +72,6 @@ private:
 	void StartupEquipment();
 
 	void AttachActorToRightHand(AActor* AttachToActor) const;
+
 
 };
