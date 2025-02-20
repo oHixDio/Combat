@@ -26,6 +26,9 @@ public:
 	// ====== ====== ======
 	// Core
 	// ====== ====== ======
+public:
+	UFUNCTION(Category = "Combat | Weapon", BlueprintPure)
+	USkeletalMeshComponent* GetWeaponMesh() const;
 private:
 	UPROPERTY(Category="Combat | Character", VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<USkeletalMeshComponent> WeaponMesh{};

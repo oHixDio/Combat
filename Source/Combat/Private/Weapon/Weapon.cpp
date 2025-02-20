@@ -26,3 +26,8 @@ void AWeapon::Tick(float DeltaTime)
 
 }
 
+USkeletalMeshComponent* AWeapon::GetWeaponMesh() const
+{
+	return WeaponMesh;
+}
+

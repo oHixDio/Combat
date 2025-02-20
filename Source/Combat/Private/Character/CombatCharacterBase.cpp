@@ -10,6 +10,8 @@
 ACombatCharacterBase::ACombatCharacterBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	SetNetUpdateFrequency(66.f);
+	SetMinNetUpdateFrequency(33.f);
 
 	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
@@ -17,8 +19,10 @@ ACombatCharacterBase::ACombatCharacterBase()
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
-
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 void ACombatCharacterBase::BeginPlay()
