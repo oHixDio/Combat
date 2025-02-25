@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "AbilitySystemComponent.h"
+#include "CombatGameplayTags.h"
 #include "EnhancedInputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -80,6 +81,8 @@ void ACombatPlayer::InitAbilityActorInfo()
 	AbilitySystemComponent = CombatPlayerState->GetAbilitySystemComponent();
 	AttributeSet = CombatPlayerState->GetAttributeSet();
 	AbilitySystemComponent->InitAbilityActorInfo(CombatPlayerState,this);
+
+	ApplyDefaultAttributes();
 }
 
 bool ACombatPlayer::IsAiming_Implementation() const
@@ -240,4 +243,3 @@ void ACombatPlayer::EquipMode()
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	bUseControllerRotationYaw = true;
 }
-

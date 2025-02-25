@@ -2,6 +2,9 @@
 
 
 #include "Character/CombatCharacterBase.h"
+
+#include "AbilitySystemComponent.h"
+#include "GameplayEffectTypes.h"
 #include "Weapon/Weapon.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -53,9 +56,14 @@ UAbilitySystemComponent* ACombatCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+UAttributeSet* ACombatCharacterBase::GetAttributeSet() const
+{
+	return AttributeSet;
+}
+
 void ACombatCharacterBase::InitAbilityActorInfo()
 {
-	// 
+	// 純粋仮想関数のように振る舞う.
 }
 
 void ACombatCharacterBase::SetMovementSpeed(const float Speed)
@@ -116,3 +124,17 @@ void ACombatCharacterBase::EquipWeapon(AWeapon* WeaponToEquip)
 	AttachActorToRightHand(Weapon);
 }
 
+void ACombatCharacterBase::ApplyEffectToSelf(const TSubclassOf<UGameplayEffect>& EffectClass, const float AbilityLevel) const
+{
+	check(GetAbilitySystemComponent());
+	check(EffectClass);
+	FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
+	ContextHandle.AddSourceObject(this);
+	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(EffectClass, AbilityLevel, ContextHandle);
+	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+}
+
+void ACombatCharacterBase::ApplyDefaultAttributes() const
+{
+	ApplyEffectToSelf(DefaultVitalAttributeClass, 1.f);
+}

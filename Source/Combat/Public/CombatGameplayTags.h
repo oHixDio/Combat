@@ -16,7 +16,15 @@ public:
 	static void InitializeNativeGameplayTags();
 
 	FGameplayTag Attributes_Vital_Health;
+	FGameplayTag Attributes_Vital_MaxHealth;
 	FGameplayTag Attributes_Vital_Stamina;
+	FGameplayTag Attributes_Vital_MaxStamina;
+
+	FGameplayTag Action_Jump;
+	FGameplayTag Action_Sprint;
+	FGameplayTag Action_Crouch;
+	FGameplayTag Action_Aim;
+	FGameplayTag Action_Roll;
 	
 
 private:

@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "CombatCharacterBase.generated.h"
 
+class UGameplayEffect;
 class AWeapon;
 class UAttributeSet;
 class UAbilitySystemComponent;
@@ -36,6 +37,9 @@ protected:
 	// ====== ====== ======
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	virtual UAttributeSet* GetAttributeSet() const;
+	
 protected:
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent{};
@@ -43,6 +47,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet{};
 
+	/** 子クラスの仕様に沿った方法で、ASCのInitAbilityActorInfoを呼び出すラップ関数. */
 	virtual void InitAbilityActorInfo();
 
 	void SetMovementSpeed(const float Speed);
@@ -56,11 +61,11 @@ protected:
 public:
 	virtual bool IsEquippedWeapon_Implementation() const override;
 
+	virtual AWeapon* GetWeapon_Implementation() override;
+	
 	// ====== ====== ======
 	// Weapon
 	// ====== ====== ======
-public:
-	virtual AWeapon* GetWeapon_Implementation() override;
 protected:
 	UPROPERTY(Category="Combat | Weapon", EditDefaultsOnly)
 	TSubclassOf<AWeapon> StartupEquipmentWeapon{};
@@ -78,5 +83,16 @@ private:
 
 	void AttachActorToRightHand(AActor* AttachToActor) const;
 
-
+	// ====== ====== ======
+	// Effects
+	// ====== ====== ======
+public:
+	/** 自分自身にEffectを与える. */
+	void ApplyEffectToSelf(const TSubclassOf<UGameplayEffect>& EffectClass, const float AbilityLevel) const;
+	
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Combat | Effects")
+	TSubclassOf<UGameplayEffect> DefaultVitalAttributeClass{};
+	
+	void ApplyDefaultAttributes() const;
 };

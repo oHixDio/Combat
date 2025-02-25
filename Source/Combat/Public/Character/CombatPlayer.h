@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CombatCharacterBase.h"
+#include "GameplayTagContainer.h"
 #include "CombatPlayer.generated.h"
 
 class UInputAction;
@@ -96,6 +97,15 @@ private:
 	UPROPERTY(Category="Combat | Action", EditAnywhere)
 	float CanSprintAngle{20.f};
 	
+	UPROPERTY(Category="Combat | Action", EditAnywhere)
+	float AimingSpringArmLength{25.f};
+
+	UPROPERTY(Category="Combat | Action", EditAnywhere)
+	float SprintingSpringArmLength{100.f};
+	
+	UPROPERTY(Category="Combat | Action", EditAnywhere)
+	float BaseSpringArmLength{50.f};
+	
 	void ToggleCrouch();
 
 	void Sprint();
@@ -119,6 +129,8 @@ private:
 
 	UFUNCTION(Server, Reliable)
 	void ServerSetAiming(const bool bAiming);
+
+	TArray<FGameplayTag> CurrentActions{};
 
 	// ====== ====== ======
 	// Weapon

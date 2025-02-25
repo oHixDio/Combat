@@ -80,20 +80,21 @@ private:
 	void SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const;
 
 public:
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Stamina, Category = "Combat | Attribute")
-	FGameplayAttributeData Stamina; ATTRIBUTE_ACCESSORS(UCombatAttributeSet, Stamina)
-	UFUNCTION() void OnRep_Stamina(const FGameplayAttributeData& OldStamina) const;
-
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxStamina, Category = "Combat | Attribute")
-	FGameplayAttributeData MaxStamina; ATTRIBUTE_ACCESSORS(UCombatAttributeSet, MaxStamina)
-	UFUNCTION() void OnRep_MaxStamina(const FGameplayAttributeData& OldMaxStamina) const;
-	
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Combat | Attribute")
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Combat | Attribute | Vital")
 	FGameplayAttributeData Health; ATTRIBUTE_ACCESSORS(UCombatAttributeSet, Health)
 	UFUNCTION() void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Combat | Attribute")
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxHealth, Category = "Combat | Attribute | Vital")
 	FGameplayAttributeData MaxHealth; ATTRIBUTE_ACCESSORS(UCombatAttributeSet, MaxHealth)
 	UFUNCTION() void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;
+	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Stamina, Category = "Combat | Attribute | Vital")
+	FGameplayAttributeData Stamina; ATTRIBUTE_ACCESSORS(UCombatAttributeSet, Stamina)
+	UFUNCTION() void OnRep_Stamina(const FGameplayAttributeData& OldStamina) const;
+
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_MaxStamina, Category = "Combat | Attribute | Vital")
+	FGameplayAttributeData MaxStamina; ATTRIBUTE_ACCESSORS(UCombatAttributeSet, MaxStamina)
+	UFUNCTION() void OnRep_MaxStamina(const FGameplayAttributeData& OldMaxStamina) const;
+
 
 };
