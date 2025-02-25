@@ -5,11 +5,16 @@
 #include "CoreMinimal.h"
 #include "CombatCharacterBase.h"
 #include "GameplayTagContainer.h"
+#include "Components/TimelineComponent.h"
 #include "CombatPlayer.generated.h"
 
 class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
+
+template<class T>
+using TRuleFuncPtr = bool (T::*)() const;
+
 
 /**
  * 
@@ -38,12 +43,22 @@ public:
 	// ====== ====== ======
 	// Core
 	// ====== ====== ======
+protected:
+	UFUNCTION(Category="Combat | Character", BlueprintImplementableEvent)
+	void ArmTargetLengthSet(const float TargetLength);
+
+	UFUNCTION(Category="Combat | Character", BlueprintImplementableEvent)
+	void ArmTargetOffsetSet(const FVector& TargetOffset);
+	
 private:
 	UPROPERTY(Category="Combat | Character", VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<USpringArmComponent> SpringArm{};
 
 	UPROPERTY(Category="Combat | Character", VisibleAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	TObjectPtr<UCameraComponent> FollowCamera{};
+
+	void SetArmTarget(const float TargetLength, const FVector& TargetOffset);
+	
 	/*
 	 * ASC,ASをPlayerStateから受け取り、ASC->InitAbilityActorInfoを実行するハンドル関数.
 	 */
@@ -61,17 +76,47 @@ public:
 	// Action
 	// ====== ====== ======
 private:
-	UPROPERTY(Category="Combat | Input", EditAnywhere)
+	UPROPERTY(Category="Combat | Action | Input", EditAnywhere)
 	TObjectPtr<UInputAction> CrouchAction{};
 
-	UPROPERTY(Category="Combat | Input", EditAnywhere)
+	UPROPERTY(Category="Combat | Action | Input", EditAnywhere)
 	TObjectPtr<UInputAction> SprintAction{};
 
-	UPROPERTY(Category="Combat | Input", EditAnywhere)
+	UPROPERTY(Category="Combat | Action | Input", EditAnywhere)
 	TObjectPtr<UInputAction> JumpAction{};
 
-	UPROPERTY(Category="Combat | Input", EditAnywhere)
+	UPROPERTY(Category="Combat | Action | Input", EditAnywhere)
 	TObjectPtr<UInputAction> AimAction{};
+
+	UPROPERTY(Category="Combat | Action | Walk", EditAnywhere)
+	float BaseWalkSpeed{500.f};
+
+	UPROPERTY(Category="Combat | Action | Walk", EditAnywhere)
+	float CrouchWalkSpeed{200.f};
+
+	UPROPERTY(Category="Combat | Action | Walk", EditAnywhere)
+	float SprintWalkSpeed{800.f};
+
+	UPROPERTY(Category="Combat | Action | Walk", EditAnywhere)
+	float AimWalkSpeed{300.f};
+	
+	UPROPERTY(Category="Combat | Action | Camera", EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	float BaseArmLength{50.f};
+
+	UPROPERTY(Category="Combat | Action | Camera", EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	float SprintingArmLength{100.f};
+
+	UPROPERTY(Category="Combat | Action | Camera", EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	FVector BaseArmOffset{};
+
+	UPROPERTY(Category="Combat | Action | Camera", EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	FVector CrouchArmOffset{FVector(0.f,0.f,-50.f)};
+	
+	UPROPERTY(Category="Combat | Action | Rule", EditAnywhere)
+	float CanSprintVelocity{300.f};
+
+	UPROPERTY(Category="Combat | Action | Rule", EditAnywhere)
+	float CanSprintAngle{20.f};
 
 	UPROPERTY(Replicated)
 	bool bIsAiming{};
@@ -79,32 +124,7 @@ private:
 	UPROPERTY(Replicated)
 	bool bIsSprinting{};
 
-	UPROPERTY(Category="Combat | Action", EditAnywhere)
-	float CrouchWalkSpeed{200.f};
-
-	UPROPERTY(Category="Combat | Action", EditAnywhere)
-	float BaseWalkSpeed{500.f};
-
-	UPROPERTY(Category="Combat | Action", EditAnywhere)
-	float SPrintWalkSpeed{800.f};
-
-	UPROPERTY(Category="Combat | Action", EditAnywhere)
-	float AimWalkSpeed{300.f};
-
-	UPROPERTY(Category="Combat | Action", EditAnywhere)
-	float CanSprintVelocity{300.f};
-
-	UPROPERTY(Category="Combat | Action", EditAnywhere)
-	float CanSprintAngle{20.f};
-	
-	UPROPERTY(Category="Combat | Action", EditAnywhere)
-	float AimingSpringArmLength{25.f};
-
-	UPROPERTY(Category="Combat | Action", EditAnywhere)
-	float SprintingSpringArmLength{100.f};
-	
-	UPROPERTY(Category="Combat | Action", EditAnywhere)
-	float BaseSpringArmLength{50.f};
+	/** Do Actions */
 	
 	void ToggleCrouch();
 
@@ -112,25 +132,49 @@ private:
 
 	void UnSprint();
 
-	void CheckSprint();
-
 	void Aim();
 
 	void UnAim();
 
-	void SetSprinting(const bool bSprinting);
+	/** Checker Actions */
+	
+	void CheckSprint();
+
+	/** Setter */
+
+	void SetIsSprinting(const bool bSprinting);
 
 	UFUNCTION(Server, Reliable)
-	void ServerSetSprinting(const bool bSprinting);
+	void ServerSetIsSprinting(const bool bSprinting);
+
+	void SetIsAiming(const bool bAiming);
+
+	UFUNCTION(Server, Reliable)
+	void ServerSetIsAiming(const bool bAiming);
+
+	/** Can Actions */
 
 	bool CanSprint() const;
 
-	void SetAiming(const bool bAiming);
+	bool CanAim() const;
 
-	UFUNCTION(Server, Reliable)
-	void ServerSetAiming(const bool bAiming);
+	/*
+	 * Applied Actions
+	 */
 
-	TArray<FGameplayTag> CurrentActions{};
+	TArray<FGameplayTag> AppliedActions{};
+
+	TMap<FGameplayTag, TRuleFuncPtr<ACombatPlayer>> ActionRules{};
+
+	void InitializeActionRule();
+
+	void ApplyAction(const FGameplayTag& ApplyActionTag);
+
+	void RemoveAction(const FGameplayTag& RemoveActionTag);
+
+	void ChangeActionMovement(const TArray<FGameplayTag>& Actions);
+
+	bool CanAction(const FGameplayTag& ActionTag) const;
 
 	// ====== ====== ======
 	// Weapon

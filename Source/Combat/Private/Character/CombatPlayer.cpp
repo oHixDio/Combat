@@ -25,6 +25,8 @@ ACombatPlayer::ACombatPlayer()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
+
+	InitializeActionRule();
 }
 
 void ACombatPlayer::PossessedBy(AController* NewController)
@@ -74,6 +76,12 @@ void ACombatPlayer::Tick(float DeltaTime)
 	}
 }
 
+void ACombatPlayer::SetArmTarget(const float TargetLength, const FVector& TargetOffset)
+{
+	ArmTargetLengthSet(TargetLength);
+	ArmTargetOffsetSet(TargetOffset);
+}
+
 void ACombatPlayer::InitAbilityActorInfo()
 {
 	ACombatPlayerState* CombatPlayerState = GetPlayerState<ACombatPlayerState>();
@@ -108,21 +116,31 @@ void ACombatPlayer::ToggleCrouch()
 		else
 		{
 			SetMovementSpeed(BaseWalkSpeed);
+			SetArmTarget(BaseArmLength, BaseArmOffset);
 		}
 	}
 	else
 	{
 		Crouch();
 		SetMovementSpeed(CrouchWalkSpeed);
+		SetArmTarget(BaseArmLength, CrouchArmOffset);
 	}
 }
 
 void ACombatPlayer::Sprint()
 {
+	const FCombatGameplayTags& CombatTags = FCombatGameplayTags::Get();
+	if (CanAction(CombatTags.Action_Sprint))
+	{
+		// ApplyAction(CombatTags.Action_Sprint);
+		// ChangeActionMovement(AppliedActions);
+	}
+	
 	if (CanSprint())
 	{
-		SetSprinting(true);
-		SetMovementSpeed(SPrintWalkSpeed);
+		SetIsSprinting(true);
+		SetMovementSpeed(SprintWalkSpeed);
+		SetArmTarget(SprintingArmLength, BaseArmOffset);
 	}
 }
 
@@ -130,9 +148,62 @@ void ACombatPlayer::UnSprint()
 {
 	if (bIsSprinting)
 	{
-		SetSprinting(false);
+		SetIsSprinting(false);
 		SetMovementSpeed(BaseWalkSpeed);
+		SetArmTarget(BaseArmLength, BaseArmOffset);
 	}
+}
+
+void ACombatPlayer::Aim()
+{
+	SetIsAiming(true);
+	if (bIsSprinting)
+	{
+		UnSprint();
+	}
+	SetMovementSpeed(AimWalkSpeed);
+}
+
+void ACombatPlayer::UnAim()
+{
+	SetIsAiming(false);
+	SetMovementSpeed(BaseWalkSpeed);
+}
+
+void ACombatPlayer::CheckSprint()
+{
+	if (bIsSprinting && !CanSprint())
+	{
+		UnSprint();
+	}
+}
+
+void ACombatPlayer::SetIsSprinting(const bool bSprinting)
+{
+	bIsSprinting = bSprinting;
+	if (!HasAuthority())
+	{
+		ServerSetIsSprinting(bSprinting);
+	}
+}
+
+void ACombatPlayer::ServerSetIsSprinting_Implementation(const bool bSprinting)
+{
+	bIsSprinting = bSprinting;
+}
+
+void ACombatPlayer::SetIsAiming(const bool bAiming)
+{
+	bIsAiming = bAiming;
+	if (!HasAuthority())
+	{
+		ServerSetIsAiming(bAiming);
+	}
+}
+
+void ACombatPlayer::ServerSetIsAiming_Implementation(const bool bAiming)
+{
+	bIsAiming = bAiming;
 }
 
 bool ACombatPlayer::CanSprint() const
@@ -171,57 +242,62 @@ bool ACombatPlayer::CanSprint() const
 	return bSuccessAngle && bSuccessVelocity;
 }
 
-
-void ACombatPlayer::CheckSprint()
+bool ACombatPlayer::CanAim() const
 {
-	if (bIsSprinting && !CanSprint())
+	return true;
+}
+
+void ACombatPlayer::InitializeActionRule()
+{
+	const FCombatGameplayTags& CombatTags = FCombatGameplayTags::Get();
+	ActionRules.Add(CombatTags.Action_Jump, &ThisClass::CanJump);
+	ActionRules.Add(CombatTags.Action_Sprint, &ThisClass::CanSprint);
+	ActionRules.Add(CombatTags.Action_Aim, &ThisClass::CanAim);
+	ActionRules.Add(CombatTags.Action_Crouch, &ThisClass::CanCrouch);
+}
+
+void ACombatPlayer::ApplyAction(const FGameplayTag& ApplyActionTag)
+{
+	AppliedActions.Add(ApplyActionTag);
+}
+
+void ACombatPlayer::RemoveAction(const FGameplayTag& RemoveActionTag)
+{
+	AppliedActions.Remove(RemoveActionTag);
+}
+
+void ACombatPlayer::ChangeActionMovement(const TArray<FGameplayTag>& Actions)
+{
+	if (Actions.IsEmpty())
 	{
-		UnSprint();
+		SetMovementSpeed(BaseWalkSpeed);
+		return;
 	}
-}
-
-void ACombatPlayer::Aim()
-{
-	SetAiming(true);
-	if (bIsSprinting)
+	const FCombatGameplayTags& CombatTags = FCombatGameplayTags::Get();
+	
+	if (Actions.Contains(CombatTags.Action_Aim))
 	{
-		UnSprint();
+		
 	}
-	SetMovementSpeed(AimWalkSpeed);
-}
-
-void ACombatPlayer::UnAim()
-{
-	SetAiming(false);
-	SetMovementSpeed(BaseWalkSpeed);
-}
-
-void ACombatPlayer::SetSprinting(const bool bSprinting)
-{
-	bIsSprinting = bSprinting;
-	if (!HasAuthority())
+	if (Actions.Contains(CombatTags.Action_Aim))
 	{
-		ServerSetSprinting(bSprinting);
+		
 	}
-}
-
-void ACombatPlayer::ServerSetSprinting_Implementation(const bool bSprinting)
-{
-	bIsSprinting = bSprinting;
-}
-
-void ACombatPlayer::SetAiming(const bool bAiming)
-{
-	bIsAiming = bAiming;
-	if (!HasAuthority())
+	if (Actions.Contains(CombatTags.Action_Aim))
 	{
-		ServerSetAiming(bAiming);
+		
 	}
+	if (Actions.Contains(CombatTags.Action_Aim))
+	{
+		
+	}
+
+	
 }
 
-void ACombatPlayer::ServerSetAiming_Implementation(const bool bAiming)
+bool ACombatPlayer::CanAction(const FGameplayTag& ActionTag) const
 {
-	bIsAiming = bAiming;
+	return AppliedActions.Contains(ActionTag) && (this->*ActionRules[ActionTag])();
 }
 
 void ACombatPlayer::EquipWeapon(AWeapon* WeaponToEquip)
