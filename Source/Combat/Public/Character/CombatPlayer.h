@@ -37,9 +37,6 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-protected:
-	virtual void BeginPlay() override;
-
 	// ====== ====== ======
 	// Core
 	// ====== ====== ======
@@ -87,6 +84,9 @@ private:
 
 	UPROPERTY(Category="Combat | Action | Input", EditAnywhere)
 	TObjectPtr<UInputAction> AimAction{};
+	
+	UPROPERTY(Category="Combat | Action | Input", EditAnywhere)
+	TObjectPtr<UInputAction> RollAction{};
 
 	UPROPERTY(Category="Combat | Action | Walk", EditAnywhere)
 	float BaseWalkSpeed{500.f};

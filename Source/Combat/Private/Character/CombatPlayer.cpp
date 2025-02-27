@@ -76,12 +76,6 @@ void ACombatPlayer::Tick(float DeltaTime)
 	}
 }
 
-void ACombatPlayer::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-
 void ACombatPlayer::SetArmTarget(const float TargetLength, const FVector& TargetOffset)
 {
 	ArmTargetLengthSet(TargetLength);
