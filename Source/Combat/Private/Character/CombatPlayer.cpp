@@ -26,7 +26,7 @@ ACombatPlayer::ACombatPlayer()
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 
-	InitializeActionRule();
+	
 }
 
 void ACombatPlayer::PossessedBy(AController* NewController)
@@ -75,6 +75,12 @@ void ACombatPlayer::Tick(float DeltaTime)
 		CheckSprint();
 	}
 }
+
+void ACombatPlayer::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
 
 void ACombatPlayer::SetArmTarget(const float TargetLength, const FVector& TargetOffset)
 {
@@ -129,13 +135,6 @@ void ACombatPlayer::ToggleCrouch()
 
 void ACombatPlayer::Sprint()
 {
-	const FCombatGameplayTags& CombatTags = FCombatGameplayTags::Get();
-	if (CanAction(CombatTags.Action_Sprint))
-	{
-		// ApplyAction(CombatTags.Action_Sprint);
-		// ChangeActionMovement(AppliedActions);
-	}
-	
 	if (CanSprint())
 	{
 		SetIsSprinting(true);
@@ -245,59 +244,6 @@ bool ACombatPlayer::CanSprint() const
 bool ACombatPlayer::CanAim() const
 {
 	return true;
-}
-
-void ACombatPlayer::InitializeActionRule()
-{
-	const FCombatGameplayTags& CombatTags = FCombatGameplayTags::Get();
-	ActionRules.Add(CombatTags.Action_Jump, &ThisClass::CanJump);
-	ActionRules.Add(CombatTags.Action_Sprint, &ThisClass::CanSprint);
-	ActionRules.Add(CombatTags.Action_Aim, &ThisClass::CanAim);
-	ActionRules.Add(CombatTags.Action_Crouch, &ThisClass::CanCrouch);
-}
-
-void ACombatPlayer::ApplyAction(const FGameplayTag& ApplyActionTag)
-{
-	AppliedActions.Add(ApplyActionTag);
-}
-
-void ACombatPlayer::RemoveAction(const FGameplayTag& RemoveActionTag)
-{
-	AppliedActions.Remove(RemoveActionTag);
-}
-
-void ACombatPlayer::ChangeActionMovement(const TArray<FGameplayTag>& Actions)
-{
-	if (Actions.IsEmpty())
-	{
-		SetMovementSpeed(BaseWalkSpeed);
-		return;
-	}
-	const FCombatGameplayTags& CombatTags = FCombatGameplayTags::Get();
-	
-	if (Actions.Contains(CombatTags.Action_Aim))
-	{
-		
-	}
-	if (Actions.Contains(CombatTags.Action_Aim))
-	{
-		
-	}
-	if (Actions.Contains(CombatTags.Action_Aim))
-	{
-		
-	}
-	if (Actions.Contains(CombatTags.Action_Aim))
-	{
-		
-	}
-
-	
-}
-
-bool ACombatPlayer::CanAction(const FGameplayTag& ActionTag) const
-{
-	return AppliedActions.Contains(ActionTag) && (this->*ActionRules[ActionTag])();
 }
 
 void ACombatPlayer::EquipWeapon(AWeapon* WeaponToEquip)

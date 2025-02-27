@@ -12,9 +12,6 @@ class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
 
-template<class T>
-using TRuleFuncPtr = bool (T::*)() const;
-
 
 /**
  * 
@@ -39,6 +36,9 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 	virtual void Tick(float DeltaTime) override;
+
+protected:
+	virtual void BeginPlay() override;
 
 	// ====== ====== ======
 	// Core
@@ -152,29 +152,11 @@ private:
 	UFUNCTION(Server, Reliable)
 	void ServerSetIsAiming(const bool bAiming);
 
-	/** Can Actions */
+	/** Can Action */
 
 	bool CanSprint() const;
 
 	bool CanAim() const;
-
-	/*
-	 * Applied Actions
-	 */
-
-	TArray<FGameplayTag> AppliedActions{};
-
-	TMap<FGameplayTag, TRuleFuncPtr<ACombatPlayer>> ActionRules{};
-
-	void InitializeActionRule();
-
-	void ApplyAction(const FGameplayTag& ApplyActionTag);
-
-	void RemoveAction(const FGameplayTag& RemoveActionTag);
-
-	void ChangeActionMovement(const TArray<FGameplayTag>& Actions);
-
-	bool CanAction(const FGameplayTag& ActionTag) const;
 
 	// ====== ====== ======
 	// Weapon
