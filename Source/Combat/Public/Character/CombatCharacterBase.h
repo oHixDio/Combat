@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "CombatCharacterBase.generated.h"
 
+class UGameplayAbility;
 class UGameplayEffect;
 class AWeapon;
 class UAttributeSet;
@@ -89,10 +90,21 @@ private:
 public:
 	/** 自分自身にEffectを与える. */
 	void ApplyEffectToSelf(const TSubclassOf<UGameplayEffect>& EffectClass, const float AbilityLevel) const;
-	
+
 protected:
+	void ApplyDefaultAttributes() const;
+	
+private:
 	UPROPERTY(EditDefaultsOnly, Category = "Combat | Effects")
 	TSubclassOf<UGameplayEffect> DefaultVitalAttributeClass{};
 	
-	void ApplyDefaultAttributes() const;
+	// ====== ====== ======
+	// Abilities
+	// ====== ====== ======
+protected:
+	void GiveStartupAbilities() const;
+	
+private:
+	UPROPERTY(EditDefaultsOnly, Category = "Combat | Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities{};
 };

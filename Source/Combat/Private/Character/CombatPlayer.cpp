@@ -34,6 +34,7 @@ void ACombatPlayer::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 
 	InitAbilityActorInfo();
+	GiveStartupAbilities();
 }
 
 void ACombatPlayer::OnRep_PlayerState()

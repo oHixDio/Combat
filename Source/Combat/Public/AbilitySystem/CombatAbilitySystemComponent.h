@@ -15,7 +15,7 @@ class COMBAT_API UCombatAbilitySystemComponent : public UAbilitySystemComponent
 	GENERATED_BODY()
 
 public:
-	void ApplyAbilities(const TArray<TSubclassOf<UGameplayAbility>> Abilities);
+	void GiveAbilities(const TArray<TSubclassOf<UGameplayAbility>>& Abilities);
 
 	
 };

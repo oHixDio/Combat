@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectTypes.h"
+#include "AbilitySystem/CombatAbilitySystemComponent.h"
 #include "Weapon/Weapon.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -137,4 +138,11 @@ void ACombatCharacterBase::ApplyEffectToSelf(const TSubclassOf<UGameplayEffect>&
 void ACombatCharacterBase::ApplyDefaultAttributes() const
 {
 	ApplyEffectToSelf(DefaultVitalAttributeClass, 1.f);
+}
+
+void ACombatCharacterBase::GiveStartupAbilities() const
+{
+	if (!HasAuthority()) return;
+
+	CastChecked<UCombatAbilitySystemComponent>(AbilitySystemComponent)->GiveAbilities(StartupAbilities);
 }
