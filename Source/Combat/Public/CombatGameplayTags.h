@@ -25,7 +25,12 @@ public:
 	FGameplayTag Action_Crouch;
 	FGameplayTag Action_Aim;
 	FGameplayTag Action_Roll;
-	
+
+	FGameplayTag Input_Jump;
+	FGameplayTag Input_Sprint;
+	FGameplayTag Input_Crouch;
+	FGameplayTag Input_Aim;
+	FGameplayTag Input_Roll;
 
 private:
 	static FCombatGameplayTags Instance;

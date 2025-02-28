@@ -15,8 +15,14 @@ void FCombatGameplayTags::InitializeNativeGameplayTags()
 	Instance.Attributes_Vital_MaxHealth = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Attributes.Vital.MaxStamina"), FString("Max stamina"));
 
 	Instance.Action_Jump = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Action.Jump"), FString("Player act Jump"));
-	Instance.Action_Sprint = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Action.Jump"), FString("Player act Sprint"));
-	Instance.Action_Crouch = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Action.Jump"), FString("Player act Crouch"));
-	Instance.Action_Aim = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Action.Jump"), FString("Player act Aim"));
-	Instance.Action_Roll = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Action.Jump"), FString("Player act Roll"));
+	Instance.Action_Sprint = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Action.Sprint"), FString("Player act Sprint"));
+	Instance.Action_Crouch = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Action.Crouch"), FString("Player act Crouch"));
+	Instance.Action_Aim = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Action.Aim"), FString("Player act Aim"));
+	Instance.Action_Roll = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Action.Roll"), FString("Player act Roll"));
+
+	Instance.Input_Jump = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Input.Jump"), FString("Input key is Jump"));
+	Instance.Input_Sprint = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Input.Sprint"), FString("Input key is Sprint"));
+	Instance.Input_Crouch = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Input.Crouch"), FString("Input key is Crouch"));
+	Instance.Input_Aim = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Input.Aim"), FString("Input key is Aim"));
+	Instance.Input_Roll = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Input.Roll"), FString("Input key is Roll"));
 }
