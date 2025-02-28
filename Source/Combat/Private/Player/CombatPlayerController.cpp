@@ -5,7 +5,7 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "GameFramework/Character.h"
+#include "Input/CombatInputComponent.h"
 
 ACombatPlayerController::ACombatPlayerController()
 {
@@ -33,9 +33,10 @@ void ACombatPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
-	EnhancedInputComponent->BindAction(MoveAction.Get(), ETriggerEvent::Triggered, this, &ThisClass::Move);
-	EnhancedInputComponent->BindAction(LookAction.Get(), ETriggerEvent::Triggered, this, &ThisClass::Look);
+	UCombatInputComponent* CombatInputComponent = CastChecked<UCombatInputComponent>(InputComponent);
+	CombatInputComponent->BindAction(MoveAction.Get(), ETriggerEvent::Triggered, this, &ThisClass::Move);
+	CombatInputComponent->BindAction(LookAction.Get(), ETriggerEvent::Triggered, this, &ThisClass::Look);
+	CombatInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::PressedAbilityAction, &ThisClass::ReleasedAbilityAction, &ThisClass::TriggeredAbilityAction);
 }
 
 void ACombatPlayerController::Move(const FInputActionValue& Value)
@@ -63,4 +64,19 @@ void ACombatPlayerController::Look(const FInputActionValue& Value)
 		ControlledPawn->AddControllerYawInput(LookVector.X);
 		ControlledPawn->AddControllerPitchInput(LookVector.Y);
 	}
+}
+
+void ACombatPlayerController::PressedAbilityAction(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, *InputTag.ToString());
+}
+
+void ACombatPlayerController::ReleasedAbilityAction(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(2, 3.f, FColor::Blue, *InputTag.ToString());
+}
+
+void ACombatPlayerController::TriggeredAbilityAction(FGameplayTag InputTag)
+{
+	GEngine->AddOnScreenDebugMessage(3, 3.f, FColor::Green, *InputTag.ToString());
 }

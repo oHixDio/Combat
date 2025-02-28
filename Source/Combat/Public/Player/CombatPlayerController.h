@@ -5,9 +5,11 @@
 #include "InputActionValue.h"
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "GameFramework/PlayerController.h"
 #include "CombatPlayerController.generated.h"
 
+class UCombatInputConfig;
 class UInputMappingContext;
 class UInputAction;
 
@@ -45,8 +47,17 @@ private:
 	UPROPERTY(Category="Combat | Input", EditAnywhere)
 	TObjectPtr<UInputAction> LookAction{};
 
+	UPROPERTY(Category="Combat | Input", EditAnywhere)
+	TObjectPtr<UCombatInputConfig> InputConfig{};
+
 	void Move(const FInputActionValue& Value);
 
 	void Look(const FInputActionValue& Value);
+
+	void PressedAbilityAction(FGameplayTag InputTag);
+
+	void ReleasedAbilityAction(FGameplayTag InputTag);
+
+	void TriggeredAbilityAction(FGameplayTag InputTag);
 
 };

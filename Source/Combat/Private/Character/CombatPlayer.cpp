@@ -220,13 +220,6 @@ bool ACombatPlayer::CanSprint() const
 	// 現在の速度を取得.
 	const float CurrentVelocity = GetVelocity().Size();
 
-	// Debug.
-	if (HasAuthority() && IsLocallyControlled())
-	{
-		GEngine->AddOnScreenDebugMessage(1, 1.f, FColor::Blue, FString::Printf(TEXT("Degrees: %f"), AngleDegrees));
-		GEngine->AddOnScreenDebugMessage(2, 1.f, FColor::Blue, FString::Printf(TEXT("Velocity: %f"), CurrentVelocity));
-	}
-
 	// 1の判定.
 	const bool bSuccessAngle = AngleDegrees <= CanSprintAngle;
 	
