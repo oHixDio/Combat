@@ -9,6 +9,7 @@
 #include "GameFramework/PlayerController.h"
 #include "CombatPlayerController.generated.h"
 
+class UCombatAbilitySystemComponent;
 class UCombatInputConfig;
 class UInputMappingContext;
 class UInputAction;
@@ -35,6 +36,15 @@ protected:
 	virtual void SetupInputComponent() override;
 
 	// ====== ====== ======
+	// Core
+	// ====== ====== ======
+protected:
+	UCombatAbilitySystemComponent* GetCombatASC();
+private:
+	UPROPERTY()
+	TObjectPtr<UCombatAbilitySystemComponent> CombatASC{};
+
+	// ====== ====== ======
 	// Input
 	// ====== ====== ======
 private:
@@ -56,8 +66,8 @@ private:
 
 	void PressedAbilityAction(FGameplayTag InputTag);
 
-	void ReleasedAbilityAction(FGameplayTag InputTag);
-
 	void TriggeredAbilityAction(FGameplayTag InputTag);
+
+	void ReleasedAbilityAction(FGameplayTag InputTag);
 
 };

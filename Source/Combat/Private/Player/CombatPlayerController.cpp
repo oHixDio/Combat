@@ -2,7 +2,8 @@
 
 
 #include "Player/CombatPlayerController.h"
-
+#include "AbilitySystem/CombatAbilitySystemComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Input/CombatInputComponent.h"
@@ -39,6 +40,16 @@ void ACombatPlayerController::SetupInputComponent()
 	CombatInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::PressedAbilityAction, &ThisClass::ReleasedAbilityAction, &ThisClass::TriggeredAbilityAction);
 }
 
+UCombatAbilitySystemComponent* ACombatPlayerController::GetCombatASC()
+{
+	if (CombatASC == nullptr)
+	{
+		CombatASC = Cast<UCombatAbilitySystemComponent>(UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetPawn()));
+	}
+
+	return CombatASC;
+}
+
 void ACombatPlayerController::Move(const FInputActionValue& Value)
 {
 	const FVector2D MovementVector = Value.Get<FVector2D>();
@@ -68,15 +79,18 @@ void ACombatPlayerController::Look(const FInputActionValue& Value)
 
 void ACombatPlayerController::PressedAbilityAction(FGameplayTag InputTag)
 {
-	GEngine->AddOnScreenDebugMessage(1, 3.f, FColor::Red, *InputTag.ToString());
-}
-
-void ACombatPlayerController::ReleasedAbilityAction(FGameplayTag InputTag)
-{
-	GEngine->AddOnScreenDebugMessage(2, 3.f, FColor::Blue, *InputTag.ToString());
+	if (GetCombatASC() == nullptr) return;
+	GetCombatASC()->PressedAbilityAction(InputTag);
 }
 
 void ACombatPlayerController::TriggeredAbilityAction(FGameplayTag InputTag)
 {
-	GEngine->AddOnScreenDebugMessage(3, 3.f, FColor::Green, *InputTag.ToString());
+	if (GetCombatASC() == nullptr) return;
+	GetCombatASC()->TriggeredAbilityAction(InputTag);
+}
+
+void ACombatPlayerController::ReleasedAbilityAction(FGameplayTag InputTag)
+{
+	if (GetCombatASC() == nullptr) return;
+	GetCombatASC()->ReleasedAbilityAction(InputTag);
 }

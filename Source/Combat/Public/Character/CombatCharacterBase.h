@@ -39,14 +39,14 @@ protected:
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	virtual UAttributeSet* GetAttributeSet() const;
+	virtual const UAttributeSet* GetAttributeSet() const;
 	
 protected:
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent{};
 
 	UPROPERTY()
-	TObjectPtr<UAttributeSet> AttributeSet{};
+	TObjectPtr<const UAttributeSet> AttributeSet{};
 
 	/** 子クラスの仕様に沿った方法で、ASCのInitAbilityActorInfoを呼び出すラップ関数. */
 	virtual void InitAbilityActorInfo();

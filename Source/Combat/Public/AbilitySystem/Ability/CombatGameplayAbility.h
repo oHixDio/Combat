@@ -13,5 +13,8 @@ UCLASS()
 class COMBAT_API UCombatGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
-	
+
+public:
+	UPROPERTY(Category = "Combat", EditDefaultsOnly)
+	FGameplayTag StartupInputTag{};
 };

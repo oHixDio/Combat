@@ -28,14 +28,12 @@ public:
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	UAttributeSet* GetAttributeSet();
+	virtual const UAttributeSet* GetAttributeSet() const;
+
 private:
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent{};
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet{};
-
-	
-	
 };

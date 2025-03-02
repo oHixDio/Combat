@@ -57,7 +57,7 @@ UAbilitySystemComponent* ACombatCharacterBase::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
-UAttributeSet* ACombatCharacterBase::GetAttributeSet() const
+const UAttributeSet* ACombatCharacterBase::GetAttributeSet() const
 {
 	return AttributeSet;
 }
@@ -144,5 +144,5 @@ void ACombatCharacterBase::GiveStartupAbilities() const
 {
 	if (!HasAuthority()) return;
 
-	CastChecked<UCombatAbilitySystemComponent>(AbilitySystemComponent)->GiveAbilities(StartupAbilities);
+	CastChecked<UCombatAbilitySystemComponent>(AbilitySystemComponent)->GiveStartupAbilities(StartupAbilities);
 }

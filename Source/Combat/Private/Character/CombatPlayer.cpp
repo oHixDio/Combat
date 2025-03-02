@@ -25,14 +25,13 @@ ACombatPlayer::ACombatPlayer()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
-
-	
 }
 
 void ACombatPlayer::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
+	// サーバー呼び出し.
 	InitAbilityActorInfo();
 	GiveStartupAbilities();
 }
@@ -41,6 +40,7 @@ void ACombatPlayer::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
 
+	// クライアント呼び出し.
 	InitAbilityActorInfo();
 }
 
