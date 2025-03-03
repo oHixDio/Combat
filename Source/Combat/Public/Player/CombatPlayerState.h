@@ -31,9 +31,9 @@ public:
 	virtual const UAttributeSet* GetAttributeSet() const;
 
 private:
-	UPROPERTY()
+	UPROPERTY(VisibleDefaultsOnly, meta = (AllowPrivateAccess = true))
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent{};
 
 	UPROPERTY()
-	TObjectPtr<UAttributeSet> AttributeSet{};
+	TObjectPtr<const UAttributeSet> AttributeSet{};
 };

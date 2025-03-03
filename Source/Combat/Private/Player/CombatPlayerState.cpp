@@ -8,15 +8,13 @@
 
 ACombatPlayerState::ACombatPlayerState()
 {
-	AttributeSet = CreateDefaultSubobject<UCombatAttributeSet>("AttributeSet");
-	
 	AbilitySystemComponent = CreateDefaultSubobject<UCombatAbilitySystemComponent>("AbilitySystem_Component");
 	check(AbilitySystemComponent);
 	AbilitySystemComponent->SetIsReplicated(true);
 	// Replicationをマルチ and Player-Controlledに設定.
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
-	// 登録. マルチプレイ環境での適切なレプリケートを目的とする.
-	AbilitySystemComponent->AddSpawnedAttribute(AttributeSet);
+	// AttributeSetの生成と登録. マルチプレイ環境での適切なレプリケートを目的とする.
+	AttributeSet = AbilitySystemComponent->GetSet<UCombatAttributeSet>();
 }
 
 UAbilitySystemComponent* ACombatPlayerState::GetAbilitySystemComponent() const
