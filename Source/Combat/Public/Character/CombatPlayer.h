@@ -171,4 +171,10 @@ protected:
 
 private:
 	void EquipMode();
+
+	// ====== ====== ======
+	// HUD
+	// ====== ====== ======
+private:
+	void InitOverlay() const;
 };

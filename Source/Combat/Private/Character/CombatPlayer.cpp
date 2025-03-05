@@ -81,15 +81,6 @@ void ACombatPlayer::Tick(float DeltaTime)
 void ACombatPlayer::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (IsLocallyControlled())
-	{
-		if (APlayerController* PC = Cast<APlayerController>(GetController()))
-		{
-			ACombatPlayerState* PS = GetPlayerState<ACombatPlayerState>();
-			PC->GetHUD<ACombatHUD>()->InitOverlay(PC, PS, GetAbilitySystemComponent(), GetAttributeSet());
-		}
-	}
 }
 
 void ACombatPlayer::SetArmTarget(const float TargetLength, const FVector& TargetOffset)
@@ -106,8 +97,9 @@ void ACombatPlayer::InitAbilityActorInfo()
 	AttributeSet = CombatPlayerState->GetAttributeSet();
 	AbilitySystemComponent->InitAbilityActorInfo(CombatPlayerState,this);
 
+	// ここじゃないと動作しない。
+	InitOverlay();
 	
-
 	ApplyDefaultAttributes();
 }
 
@@ -269,4 +261,16 @@ void ACombatPlayer::EquipMode()
 {
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 	bUseControllerRotationYaw = true;
+}
+
+void ACombatPlayer::InitOverlay() const
+{
+	if (IsLocallyControlled())
+	{
+		if (APlayerController* PC = Cast<APlayerController>(GetController()))
+		{
+			ACombatPlayerState* PS = GetPlayerState<ACombatPlayerState>();
+			PC->GetHUD<ACombatHUD>()->InitOverlay(PC, PS, GetAbilitySystemComponent(), GetAttributeSet());
+		}
+	}
 }

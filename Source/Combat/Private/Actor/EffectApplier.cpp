@@ -3,25 +3,79 @@
 
 #include "Actor/EffectApplier.h"
 
-// Sets default values
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
+
 AEffectApplier::AEffectApplier()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
+	PrimaryActorTick.bCanEverTick = false;
+	SetRootComponent(CreateDefaultSubobject<USceneComponent>("Root"));
 }
 
-// Called when the game starts or when spawned
-void AEffectApplier::BeginPlay()
+void AEffectApplier::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass)
 {
-	Super::BeginPlay();
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	if (TargetASC == nullptr) return;	// ← ASCを持っていないActorと接触する可能性がある.
+
+	check(GameplayEffectClass);
+	FGameplayEffectContextHandle ContextHandle = TargetASC->MakeEffectContext();
+	ContextHandle.AddSourceObject(this);
+	const FGameplayEffectSpecHandle SpecHandle = TargetASC->MakeOutgoingSpec(GameplayEffectClass, ApplierLevel, ContextHandle);
+	const FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+
+	// 削除するためにキャッシュする。
+	const bool bIsInfinite =  EGameplayEffectDurationType::Infinite == SpecHandle.Data.Get()->Def.Get()->DurationPolicy;
+	if (bIsInfinite && EEffectRemovalPolicy::RemoveOnEndOverlap == RemovalPolicy)
+	{
+		ActiveEffectHandles.Add(ActiveEffectHandle, TargetASC);
+	}
+
+	if (bAppliedDestroy && !bIsInfinite)
+	{
+		Destroy();
+	}
+}
+
+void AEffectApplier::OnBeginOverlap(AActor* TargetActor)
+{
+	if (EEffectApplicationPolicy::ApplyOnBeginOverlap == ApplicationPolicy)
+	{
+		ApplyEffectToTarget(TargetActor, ApplyEffectClass);
+	}
+}
+
+void AEffectApplier::OnEndOverlap(AActor* TargetActor)
+{
+	if (EEffectApplicationPolicy::ApplyOnEndOverlap == ApplicationPolicy)
+	{
+		ApplyEffectToTarget(TargetActor, ApplyEffectClass);
+	}
+
+	RemoveEffect(TargetActor);
+}
+
+void AEffectApplier::RemoveEffect(AActor* TargetActor)
+{
+	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
+	if (!IsValid(TargetASC)) return;
+
+	TArray<FActiveGameplayEffectHandle> RemovedEffects;
 	
+	for (TTuple<FActiveGameplayEffectHandle, UAbilitySystemComponent*> ActiveEffectHandle : ActiveEffectHandles)
+	{
+		// ApplyしたアクタがEndOverlapしたのかを確かめている。
+		if (ActiveEffectHandle.Value == TargetASC)
+		{
+			// ActiveEffectsから１つずつ除去する。
+			TargetASC->RemoveActiveGameplayEffect(ActiveEffectHandle.Key, 1);
+			// 後で配列から除去する為にキャッシュする。
+			RemovedEffects.Add(ActiveEffectHandle.Key);
+		}
+	}
+	
+	// ASCから除去できたHandleをMapからも除去する。
+	for (FActiveGameplayEffectHandle& RemovedEffect : RemovedEffects)
+	{
+		ActiveEffectHandles.FindAndRemoveChecked(RemovedEffect);
+	}
 }
-
-// Called every frame
-void AEffectApplier::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
