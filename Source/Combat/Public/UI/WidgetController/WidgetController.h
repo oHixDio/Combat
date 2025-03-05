@@ -8,14 +8,20 @@
 class UAttributeSet;
 class UAbilitySystemComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAttributeValueChanged, float, NewValue);
+
 USTRUCT(BlueprintType)
 struct FWidgetControllerParams
 {
 	GENERATED_BODY()
 
 	FWidgetControllerParams() {}
-	FWidgetControllerParams(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
-		: PlayerController(PC), PlayerState(PS), AbilitySystemComponent(ASC), AttributeSet(AS) {}
+	FWidgetControllerParams(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, const UAttributeSet* AS)
+		: PlayerController(PC)
+		, PlayerState(PS)
+		, AbilitySystemComponent(ASC)
+		, AttributeSet(AS)
+	{}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<APlayerController> PlayerController{};
@@ -27,7 +33,7 @@ struct FWidgetControllerParams
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent{};
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UAttributeSet> AttributeSet{};
+	TObjectPtr<const UAttributeSet> AttributeSet{};
 };
 
 /**
@@ -57,5 +63,5 @@ protected:
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent{};
 
 	UPROPERTY(Category = "Combat | UI", BlueprintReadOnly)
-	TObjectPtr<UAttributeSet> AttributeSet{};
+	TObjectPtr<const UAttributeSet> AttributeSet{};
 };

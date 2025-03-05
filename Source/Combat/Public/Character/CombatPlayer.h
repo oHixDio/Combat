@@ -37,6 +37,9 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+protected:
+	virtual void BeginPlay() override;
+
 	// ====== ====== ======
 	// Core
 	// ====== ====== ======

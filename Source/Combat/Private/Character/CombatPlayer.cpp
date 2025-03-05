@@ -10,6 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/CombatPlayerState.h"
+#include "UI/HUD/CombatHUD.h"
 
 ACombatPlayer::ACombatPlayer()
 {
@@ -77,6 +78,20 @@ void ACombatPlayer::Tick(float DeltaTime)
 	}
 }
 
+void ACombatPlayer::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (IsLocallyControlled())
+	{
+		if (APlayerController* PC = Cast<APlayerController>(GetController()))
+		{
+			ACombatPlayerState* PS = GetPlayerState<ACombatPlayerState>();
+			PC->GetHUD<ACombatHUD>()->InitOverlay(PC, PS, GetAbilitySystemComponent(), GetAttributeSet());
+		}
+	}
+}
+
 void ACombatPlayer::SetArmTarget(const float TargetLength, const FVector& TargetOffset)
 {
 	ArmTargetLengthSet(TargetLength);
@@ -90,6 +105,8 @@ void ACombatPlayer::InitAbilityActorInfo()
 	AbilitySystemComponent = CombatPlayerState->GetAbilitySystemComponent();
 	AttributeSet = CombatPlayerState->GetAttributeSet();
 	AbilitySystemComponent->InitAbilityActorInfo(CombatPlayerState,this);
+
+	
 
 	ApplyDefaultAttributes();
 }
