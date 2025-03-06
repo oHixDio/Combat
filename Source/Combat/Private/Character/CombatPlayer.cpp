@@ -144,6 +144,7 @@ void ACombatPlayer::Sprint()
 		SetIsSprinting(true);
 		SetMovementSpeed(SprintWalkSpeed);
 		SetArmTarget(SprintingArmLength, BaseArmOffset);
+		CachedSprintEffectHandle = ApplyEffectToSelf(SprintEffectClass, 1);
 	}
 }
 
@@ -154,6 +155,7 @@ void ACombatPlayer::UnSprint()
 		SetIsSprinting(false);
 		SetMovementSpeed(BaseWalkSpeed);
 		SetArmTarget(BaseArmLength, BaseArmOffset);
+		AbilitySystemComponent->RemoveActiveGameplayEffect(CachedSprintEffectHandle);
 	}
 }
 

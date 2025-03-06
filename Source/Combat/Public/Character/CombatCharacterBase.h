@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemInterface.h"
+#include "ActiveGameplayEffectHandle.h"
 #include "CombatInterface.h"
 #include "GameFramework/Character.h"
 #include "CombatCharacterBase.generated.h"
@@ -89,7 +90,7 @@ private:
 	// ====== ====== ======
 public:
 	/** 自分自身にEffectを与える. */
-	void ApplyEffectToSelf(const TSubclassOf<UGameplayEffect>& EffectClass, const float AbilityLevel) const;
+	FActiveGameplayEffectHandle ApplyEffectToSelf(const TSubclassOf<UGameplayEffect>& EffectClass, const float AbilityLevel) const;
 
 protected:
 	void ApplyDefaultAttributes() const;

@@ -22,7 +22,10 @@ void FCombatGameplayTags::InitializeNativeGameplayTags()
 
 	Instance.Input_Jump = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Input.Jump"), FString("Input key is Jump"));
 	Instance.Input_Sprint = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Input.Sprint"), FString("Input key is Sprint"));
+	Instance.Input_UnSprint = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Input.UnSprint"), FString("Input key is UnSprint"));
 	Instance.Input_Crouch = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Input.Crouch"), FString("Input key is Crouch"));
+	Instance.Input_UnCrouch = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Input.UnCrouch"), FString("Input key is UnCrouch"));
 	Instance.Input_Aim = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Input.Aim"), FString("Input key is Aim"));
+	Instance.Input_UnAim = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Input.UnAim"), FString("Input key is UnAim"));
 	Instance.Input_Roll = UGameplayTagsManager::Get().AddNativeGameplayTag(FName("Input.Roll"), FString("Input key is Roll"));
 }

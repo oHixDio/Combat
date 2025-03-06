@@ -160,6 +160,15 @@ private:
 	bool CanSprint() const;
 
 	bool CanAim() const;
+	
+	// ====== ====== ======
+	// Effects
+	// ====== ====== ======
+private:
+	UPROPERTY(Category="Combat | Effects", EditAnywhere)
+	TSubclassOf<UGameplayEffect> SprintEffectClass{};
+
+	FActiveGameplayEffectHandle CachedSprintEffectHandle{};
 
 	// ====== ====== ======
 	// Weapon

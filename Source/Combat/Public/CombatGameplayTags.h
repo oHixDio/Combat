@@ -28,8 +28,11 @@ public:
 
 	FGameplayTag Input_Jump;
 	FGameplayTag Input_Sprint;
+	FGameplayTag Input_UnSprint;
 	FGameplayTag Input_Crouch;
+	FGameplayTag Input_UnCrouch;
 	FGameplayTag Input_Aim;
+	FGameplayTag Input_UnAim;
 	FGameplayTag Input_Roll;
 
 private:

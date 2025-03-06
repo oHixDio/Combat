@@ -125,14 +125,14 @@ void ACombatCharacterBase::EquipWeapon(AWeapon* WeaponToEquip)
 	AttachActorToRightHand(Weapon);
 }
 
-void ACombatCharacterBase::ApplyEffectToSelf(const TSubclassOf<UGameplayEffect>& EffectClass, const float AbilityLevel) const
+FActiveGameplayEffectHandle ACombatCharacterBase::ApplyEffectToSelf(const TSubclassOf<UGameplayEffect>& EffectClass, const float AbilityLevel) const
 {
 	check(GetAbilitySystemComponent());
 	check(EffectClass);
 	FGameplayEffectContextHandle ContextHandle = GetAbilitySystemComponent()->MakeEffectContext();
 	ContextHandle.AddSourceObject(this);
 	const FGameplayEffectSpecHandle SpecHandle = GetAbilitySystemComponent()->MakeOutgoingSpec(EffectClass, AbilityLevel, ContextHandle);
-	GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+	return GetAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 }
 
 void ACombatCharacterBase::ApplyDefaultAttributes() const

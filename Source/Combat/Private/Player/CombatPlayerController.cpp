@@ -81,16 +81,19 @@ void ACombatPlayerController::PressedAbilityAction(FGameplayTag InputTag)
 {
 	if (GetCombatASC() == nullptr) return;
 	GetCombatASC()->PressedAbilityAction(InputTag);
+	GEngine->AddOnScreenDebugMessage(1, 2.f, FColor::Red, *InputTag.GetTagName().ToString());
 }
 
 void ACombatPlayerController::TriggeredAbilityAction(FGameplayTag InputTag)
 {
 	if (GetCombatASC() == nullptr) return;
 	GetCombatASC()->TriggeredAbilityAction(InputTag);
+	GEngine->AddOnScreenDebugMessage(2, 2.f, FColor::Green, *InputTag.GetTagName().ToString());
 }
 
 void ACombatPlayerController::ReleasedAbilityAction(FGameplayTag InputTag)
 {
 	if (GetCombatASC() == nullptr) return;
 	GetCombatASC()->ReleasedAbilityAction(InputTag);
+	GEngine->AddOnScreenDebugMessage(3, 2.f, FColor::Blue, *InputTag.GetTagName().ToString());
 }
